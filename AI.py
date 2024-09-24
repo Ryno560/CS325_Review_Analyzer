@@ -21,7 +21,7 @@ class AI:
     def getResponse(self, input: str) -> str:
          
         output = self.llm(
-        f"<|user|>\n{input}<|end|>\n<|assistant|>",
+        f"<|user|>\n{input}\n<|assistant|>",
         max_tokens=256,  # Generate up to 256 tokens
         stop=["<|end|>"], 
         echo=True,  # Whether to echo the prompt

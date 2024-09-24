@@ -18,7 +18,6 @@ class File:
             with open(self.input_file, "r") as file:
                 lines = file.readlines()
                 return [line.strip() for line in lines]
-            return prompt
         except FileNotFoundError:
             print(f"Error: {self.input_file} not found.")
             return ""
