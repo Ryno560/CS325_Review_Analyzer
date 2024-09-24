@@ -17,4 +17,5 @@ Next create your conda environment using the requirements.yaml file using the co
 Now that the environment is created activate the environment using the command -
 "conda activate cs_325_project"
 
-The environment should now be ready and the python script AI.py should run with no issues 
+The environment should now be ready and the python script Main.py should run with no issues
+The other scripts included are FileIO.py and AI.py which each include a class that are used by Main.py 
