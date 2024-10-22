@@ -1,0 +1,22 @@
+name: cs_325_project
+channels:
+  - defaults
+dependencies:
+  - ca-certificates=2024.7.2=haa95532_0
+  - openssl=3.0.15=h827c3e9_0
+  - pip=24.2=py39haa95532_0
+  - python=3.9.19=h1aa4202_1
+  - setuptools=75.1.0=py39haa95532_0
+  - sqlite=3.45.3=h2bbff1b_0
+  - tzdata=2024a=h04d1e81_0
+  - vc=14.40=h2eaa2aa_1
+  - vs2015_runtime=14.40.33807=h98bb1dd_1
+  - wheel=0.44.0=py39haa95532_0
+  - pip:
+      - diskcache==5.6.3
+      - jinja2==3.1.4
+      - llama-cpp-python==0.2.90
+      - markupsafe==2.1.5
+      - numpy==2.0.2
+      - typing-extensions==4.12.2
+prefix: C:\Users\Ryan\miniconda3\envs\cs_325_project
