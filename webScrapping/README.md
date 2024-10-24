@@ -1,6 +1,13 @@
 Author: Ryan Hanks 
 Web Scrapper and Analysis project
 
+This software (Main.py) reads in links from a text file (links.txt) and then extracts the reviews from the website
+The software then outputs the extracted data into seperate text files for each link.
+The software uses 2 packages beautifulsoup4 and requests to scrape the data from the website, Ebay in this case.
+There is also 2 classes used in main I created one for File input and output and the other to scrape the data from the webpage.
+
+SETUP:
+
 To create your conda environment first download the requirements.yaml file and then use the command -
 "conda env create -f requirements.yaml"
 
