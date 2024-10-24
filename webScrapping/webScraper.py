@@ -1,14 +1,25 @@
+#Author: Ryan Hanks
+#File: webScraper.py
+#Description: Includes the class webScraper that uses the requests and beautifulsoup4 
+#packages to scrape data from a given url.
+
 import requests
 from bs4 import BeautifulSoup
 
+#class: webScraper
+#Has contructor that has one argument, url, which is given by the user.
+#fetch_page_content member function fetches all of the HTML content of the webpage.
+#get_reviews cleans up the HTML retrieving all content from the provided 
+#CSS class returning a list of each instance of the class (as strings).
 class webScraper:
+    #constructor has one argument url
     def __init__(self, url):
         self.url = url
         self.page_content = None
         self.soup = None
 
+    #Fetches the HTML content of the page.
     def fetch_page_content(self):
-        #Fetches the HTML content of the page.
         try:
             response = requests.get(self.url)
             if response.status_code == 200:
@@ -19,14 +30,13 @@ class webScraper:
         except Exception as e:
             print(f"An error occurred: {e}")
 
+    #Extracts reviews from the page using the provided CSS class name.
+    #The paramater is review_class: The class name of the HTML element containing the reviews.
+    #Returns A list of reviews (as strings).
     def get_reviews(self, review_class):
-        
-        #Extracts reviews from the page using the provided CSS class name.
-        #:param review_class: The class name of the HTML element containing the reviews.
-        #:return: A list of reviews (as strings).
 
         if self.soup is None:
-            print("Content not fetched. Call fetch_page_content() first.")
+            print("Content not fetched.")
             return []
 
         reviews = []
