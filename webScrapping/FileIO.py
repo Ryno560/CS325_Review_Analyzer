@@ -1,8 +1,7 @@
 #Author: Ryan Hanks
 #File: FileIO.py
 #Description: This file does nothing when executed. 
-#The File class is created with constructor that accepts both an input and output file as arguments
-#Also declared are the member functions read and write 
+#The File class has 2 declared member functions read and write 
 
 class File:
 
