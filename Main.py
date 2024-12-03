@@ -1,7 +1,7 @@
 # Author: Ryan Hanks
 # File: Main.py
-# Description: This script reads URLs from a text file, 
-# scrapes reviews, uses an AI model to classify them, and writes results to output files.
+# Description: This script automates the process of scraping reviews from websites,
+# classifies the sentiment of each review using an AI model, and visualizes the results.
 
 from webScraper import webScraper
 from AI import AI
@@ -9,73 +9,130 @@ from FileIO import File
 import matplotlib.pyplot as plt
 from collections import Counter
 
+
 def process_reviews():
-    # Initialize the File, AI, and setup paths
+    """
+    Reads URLs from a text file, scrapes reviews from each URL, classifies each review's sentiment, 
+    and writes the results to separate output files. Returns the list of processed URLs and output files.
+
+    Returns:
+        tuple: A tuple containing:
+            - urls (list): List of URLs processed.
+            - output_files (list): List of output file names.
+    """
+    # Initialize helper classes
     file_io = File()
     ai = AI()
-    links_file = "links.txt"
-    review_class_name = "fdbk-container__details__comment"  # Update with the correct CSS class name for reviews
 
-    # Read URLs from links.txt
+    # Path to the file containing URLs
+    links_file = "links.txt"
+
+    # CSS class name of the HTML elements containing the reviews
+    review_class_name = "fdbk-container__details__comment"
+
+    # Read URLs from the file
     urls = file_io.read(links_file)
     if not urls:
         print("No URLs found in links.txt")
-        return [], []  # Return empty lists if no URLs
+        return [], []  # Return empty lists if no URLs are provided
 
-    output_files = []  # Initialize the list to hold output files
+    # List to store names of output files
+    output_files = []
 
     # Process each URL
-    for index, url in enumerate(urls, start=1):
+    for index, url in enumerate(urls, start=5):  # File names start from GooglePixel_5
         print(f"Processing URL {index}/{len(urls)}: {url}")
-        
-        # Scrape reviews
-        scraper = webScraper(url)
-        scraper.fetch_page_content()
-        reviews = scraper.get_reviews(review_class_name)
 
-        # If no reviews are found, skip the URL
+        # Create a webScraper instance for the current URL
+        scraper = webScraper(url)
+        scraper.fetch_page_content()  # Fetch the page's HTML content
+        reviews = scraper.get_reviews(review_class_name)  # Extract reviews using the CSS class
+
+        # Skip URLs with no reviews
         if not reviews:
             print(f"No reviews found for URL: {url}")
             continue
 
-        # Generate output file name
-        output_file = f"output_{index}.txt"
-        output_files.append(output_file)  # Append output file name to the list
+        # Generate output file name based on the URL index
+        output_file = f"GooglePixel_{index}.txt"
+        output_files.append(output_file)
 
-        # Classify each review and write to the output file
+        # Classify each review and write the sentiment to the output file
         for review in reviews:
-            response = ai.getResponse(f"Classify this review as positive, negative, or neutral. Respond with only one word: {review}").lower()
-            file_io.write(output_file, response)
+            prompt = f"Classify this review as positive, negative, or neutral. Respond with only one word: {review}"
+            response = ai.getResponse(prompt).lower()  # Get AI response and convert to lowercase
+            file_io.write(output_file, response)  # Write the response to the output file
 
         print(f"Results written to {output_file}")
 
-    return urls, output_files  # Return URLs and output files for plotting
+    return urls, output_files
+
 
 def plot_sentiment_counts(output_files):
-    sentiment_counts = Counter()
+    """
+    Reads the sentiment classifications from the output files and visualizes the distribution of sentiments
+    (positive, negative, neutral) for each file using a grouped bar chart.
+
+    Args:
+        output_files (list): List of output file names containing sentiment classifications.
+    """
+    import numpy as np
+
+    # List to store sentiment counts for each output file
+    sentiment_counts_per_file = []
 
     # Read each output file and count sentiments
     for file in output_files:
+        sentiment_counts = Counter()
         try:
+            # Read sentiment classifications from the file
             with open(file, 'r') as f:
                 sentiments = [line.strip() for line in f.readlines()]
                 sentiment_counts.update(sentiments)
         except FileNotFoundError:
             print(f"File {file} not found.")
-            continue
+            sentiment_counts = {"positive": 0, "negative": 0, "neutral": 0}  # Default counts
 
-    # Extract labels and counts
+        sentiment_counts_per_file.append(sentiment_counts)
+
+    # Extract sentiment labels
     labels = ['positive', 'negative', 'neutral']
-    counts = [sentiment_counts[label] for label in labels]
+    n_files = len(output_files)
 
-    # Plot bar chart
-    plt.bar(labels, counts, color=['green', 'red', 'blue'])
-    plt.title('Sentiment Distribution')
-    plt.xlabel('Sentiments')
-    plt.ylabel('Counts')
+    # Bar chart configuration
+    x = np.arange(n_files)  # Positions for each output file group
+    width = 0.2  # Width of each bar
+
+    # Initialize plot
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Plot grouped bars for each sentiment
+    for i, label in enumerate(labels):
+        # Get counts for the current sentiment across all files
+        counts = [file_counts.get(label, 0) for file_counts in sentiment_counts_per_file]
+        ax.bar(x + i * width, counts, width, label=label)  # Plot the bar group
+
+    # Set x-axis labels to file names (e.g., GooglePixel_5, GooglePixel_6)
+    file_names = [f"GooglePixel_{i+5}" for i in range(n_files)]
+    ax.set_xticks(x + width)  # Center the groups
+    ax.set_xticklabels(file_names)
+
+    # Add chart title and axis labels
+    ax.set_title('Sentiment Distribution per Output File')
+    ax.set_xlabel('Output Files')
+    ax.set_ylabel('Counts')
+
+    # Add legend for sentiment types
+    ax.legend(title="Sentiments")
+
+    # Display the chart
     plt.show()
 
+
 if __name__ == "__main__":
-    urls, output_files = process_reviews()  # Get URLs and output files
-    if urls:  # Only plot if there are reviews processed
+    # Process reviews and retrieve URLs and output file names
+    urls, output_files = process_reviews()
+
+    # Plot the sentiment distribution if there are reviews
+    if urls:
         plot_sentiment_counts(output_files)
