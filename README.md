@@ -1,10 +1,10 @@
 Web Scraper and Sentiment Analysis Project  
 Author: Ryan Hanks  
 
-![My_Image](Sentiment_Chart.png)
-
 Overview: 
-This project scrapes reviews from websites, classifies them as positive, negative, or neutral using an AI model, and visualizes the results.
+This project scrapes reviews from websites, classifies them as positive, negative, or neutral using an AI model, and visualizes the results. As seen in the chart below
+
+![My_Image](Sentiment_Chart.png)
 
 Features:  
 - Scrapes reviews from URLs in `links.txt`.  
